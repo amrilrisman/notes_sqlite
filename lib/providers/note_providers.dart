@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes_app_sqflite/databases/db_service.dart';
 import 'package:notes_app_sqflite/models/notes_models.dart';
+import 'package:notes_app_sqflite/page/detail_note/detail_note_page.dart';
 import 'package:notes_app_sqflite/utils/navigator_custom.dart';
 import 'package:notes_app_sqflite/utils/state_data.dart';
 import 'package:notes_app_sqflite/widgets/snackbar_custom.dart';
@@ -41,18 +42,21 @@ class NotesProviders extends ChangeNotifier {
   Future createNewNote(
       {required String title, required String description}) async {
     try {
-      final bool response = await _database.post(
+      final int response = await _database.post(
         NoteModels(
           title: title,
-          id: '${_dataNote.length + 1}',
+          id: '',
           description: description,
         ),
       );
-      if (response == true) {
+
+      if (response >= 0) {
         SnacbarCustom.snackbarSucces(message: 'Catatan berhasil dibuat');
 
         getDataNotes();
         Navigation.pop();
+        Navigation.pushPage(
+            route: DetailNotePage.routeNamed, arguments: "$response");
       } else {
         SnacbarCustom.snackbarError(message: 'Gagal membuat catatan');
         print('gagal buat');

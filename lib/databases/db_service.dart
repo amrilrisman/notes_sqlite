@@ -23,7 +23,7 @@ class DataBaseService {
         version: 1,
         onCreate: (db, version) async {
           await db.execute(
-            '''CREATE TABLE $_nameTable (id INTEGER PRIMARY KEY, title TEXT, description TEXT)''',
+            '''CREATE TABLE $_nameTable (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT)''',
           );
         },
       );
@@ -37,14 +37,15 @@ class DataBaseService {
   Future<Database?> get createDataBase async => _createDatabase();
 
   // insert database
-  Future<bool> post(NoteModels data) async {
+  Future<int> post(NoteModels data) async {
     try {
       final db = await createDataBase;
-      await db!.insert(_nameTable, data.toJson());
-      return true;
+      final response = await db!.insert(_nameTable, data.toJson());
+      // print();
+      return response;
     } catch (e) {
       print('Gagal menambahkan data');
-      return false;
+      return -1;
     }
   }
 
@@ -54,7 +55,6 @@ class DataBaseService {
       final db = await createDataBase;
       // mengambil row pada database
       final List<Map<String, Object?>> data = await db!.query(_nameTable);
-      print(data);
       return data.map((e) => NoteModels.fromJson(e)).toList();
     } catch (e) {
       return [];
@@ -77,7 +77,6 @@ class DataBaseService {
 
   // update data at database
   Future<bool> put(NoteModels note) async {
-    print(note.id);
     try {
       final db = await createDataBase;
       await db!.update(

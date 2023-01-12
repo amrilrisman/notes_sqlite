@@ -48,10 +48,12 @@ class DetailNotePage extends StatelessWidget {
             ),
             IconButton(
                 onPressed: () {
-                  context.read<NotesProviders>().updateNote(
-                      id: id,
-                      title: detail.detailNOte.title,
-                      description: _controller.text);
+                  if (detail.detailNOte.description != _controller.text) {
+                    context.read<NotesProviders>().updateNote(
+                        id: id,
+                        title: detail.detailNOte.title,
+                        description: _controller.text);
+                  }
                 },
                 icon: const Icon(Icons.save)),
           ],
